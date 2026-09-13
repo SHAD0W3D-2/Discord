@@ -1,4 +1,5 @@
 const socket = io();
+let installPrompt = null;
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -132,6 +133,7 @@ const elements = {
   notificationPanel: document.getElementById('notification-panel'),
   notificationList: document.getElementById('notification-list'),
   clearNotifications: document.getElementById('clear-notifications'),
+  installApp: document.getElementById('install-app'),
   voiceToggle: document.getElementById('voice-toggle'),
   voiceMute: document.getElementById('voice-mute'),
   voiceStatus: document.getElementById('voice-status'),
@@ -1116,6 +1118,29 @@ elements.registerShowPassword.addEventListener('change', () => {
 });
 
 elements.logoutButton.addEventListener('click', logOut);
+
+window.addEventListener('beforeinstallprompt', (event) => {
+  event.preventDefault();
+  installPrompt = event;
+  elements.installApp.hidden = false;
+});
+
+window.addEventListener('appinstalled', () => {
+  installPrompt = null;
+  elements.installApp.hidden = true;
+});
+
+elements.installApp.addEventListener('click', async () => {
+  if (!installPrompt) {
+    appendSystemMessage('Use your browser menu and choose Add to Home screen or Install app.');
+    return;
+  }
+
+  installPrompt.prompt();
+  await installPrompt.userChoice;
+  installPrompt = null;
+  elements.installApp.hidden = true;
+});
 
 function resizeAvatar(file) {
   return new Promise((resolve, reject) => {
