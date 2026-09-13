@@ -1,0 +1,20 @@
+{
+  "name": "discord-messaging-platform",
+  "version": "1.0.0",
+  "description": "A lightweight messaging platform built with Node.js and Socket.IO",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "chat",
+    "messaging",
+    "socket.io",
+    "express"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5"
+  }
+}

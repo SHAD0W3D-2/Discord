@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BlueCord</title>
+    <meta name="theme-color" content="#8b5cf6" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="manifest" href="/manifest.json" />
+    <link id="site-icon" rel="icon" type="image/png" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand-block">
+          <div class="brand-badge" aria-label="BlueCord logo">
+            <svg viewBox="0 0 48 40" role="img" aria-hidden="true">
+              <path d="M9 4h30c3 0 5 2 6 5l3 18c1 5-3 9-7 9-3 0-5-2-7-5H14c-2 3-4 5-7 5-4 0-8-4-7-9L3 9c1-3 3-5 6-5Zm8 8v5h-5v4h5v5h4v-5h5v-4h-5v-5h-4Zm15 4a3 3 0 1 0 0 6 3 3 0 0 0 0-6Zm7 0a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z" fill="currentColor"/>
+            </svg>
+          </div>
+          <div>
+            <h1>BlueCord</h1>
+            <p>Messaging platform</p>
+          </div>
+        </div>
+
+        <div class="mobile-settings-bar" aria-label="Mobile settings">
+          <button id="mobile-settings-toggle" class="mobile-settings-toggle" type="button" aria-expanded="false">Settings</button>
+          <div id="mobile-settings-panel" class="mobile-settings-panel" hidden>
+            <label class="profile-upload-label compact" for="mobile-profile-file-input">
+              <input id="mobile-profile-file-input" type="file" accept="image/png,image/jpeg,image/jpg,image/webp" />
+              <span>Change profile picture</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Servers</h3>
+          <div id="room-list" class="room-list"></div>
+          <form id="room-form" class="inline-form">
+            <input id="room-name" type="text" placeholder="New server" maxlength="30" required />
+            <input id="room-password" type="password" placeholder="Password" maxlength="64" required />
+            <button type="submit">Add</button>
+          </form>
+        </div>
+
+        <div class="panel friend-panel">
+          <h3>Direct messages</h3>
+          <div id="dm-list" class="room-list"></div>
+        </div>
+
+        <div class="panel friend-panel">
+          <h3>Friend requests</h3>
+          <ul id="friend-request-list" class="friend-list"></ul>
+          <form id="friend-form" class="inline-form">
+            <input id="friend-name" type="text" placeholder="Send request" maxlength="24" />
+            <button type="submit">Send</button>
+          </form>
+        </div>
+
+        <div class="panel friend-panel">
+          <h3>Friends</h3>
+          <ul id="friend-list" class="friend-list"></ul>
+        </div>
+      </aside>
+
+      <main class="chat-panel">
+        <header class="chat-header">
+          <div>
+            <p class="eyebrow">Active server</p>
+            <h2 id="active-room">general</h2>
+          </div>
+          <div class="header-actions">
+            <div class="notification-wrap header-notifications">
+              <button id="notification-toggle" class="notification-button" type="button" aria-label="Open notifications" aria-expanded="false">
+                <span aria-hidden="true">&#128276;</span>
+                <span class="notification-label">Notifications</span>
+                <span id="notification-count" class="notification-count hidden">0</span>
+              </button>
+              <section id="notification-panel" class="notification-panel" aria-label="Notifications" hidden>
+                <div class="notification-panel-header">
+                  <h3>Notifications</h3>
+                  <button id="clear-notifications" type="button">Clear all</button>
+                </div>
+                <ul id="notification-list" class="notification-list"></ul>
+              </section>
+            </div>
+            <button id="clear-chat" class="clear-chat-button" type="button" hidden>Clear chat</button>
+            <div class="voice-controls" aria-label="Voice chat">
+              <button id="voice-toggle" class="voice-button" type="button">Join voice</button>
+              <button id="voice-mute" class="voice-button secondary" type="button" hidden>Mute</button>
+              <span id="voice-status" class="voice-status" aria-live="polite"></span>
+            </div>
+            <div id="connection-status" class="status online">Connected</div>
+            <button id="logout-button" class="logout-button" type="button">Log out</button>
+          </div>
+        </header>
+
+        <section class="chat-body">
+          <div id="messages" class="messages" aria-live="polite"></div>
+          <aside class="users-panel">
+            <h3>People</h3>
+            <ul id="user-list" class="user-list"></ul>
+          </aside>
+        </section>
+
+        <form id="chat-form" class="chat-form">
+          <input id="message-input" type="text" placeholder="Type your message..." maxlength="500" autocomplete="off" />
+          <button type="submit">Send</button>
+        </form>
+      </main>
+    </div>
+
+    <div id="join-modal" class="modal visible">
+      <div class="modal-card">
+        <h2>Welcome</h2>
+        <div class="auth-toggle">
+          <button type="button" id="show-login" class="auth-tab active">Login</button>
+          <button type="button" id="show-register" class="auth-tab">Register</button>
+        </div>
+
+        <form id="login-form" class="auth-form visible">
+          <label>
+            Username
+            <input id="login-username" type="text" maxlength="24" placeholder="alex" required />
+          </label>
+          <div class="password-field">
+            <label for="login-password">Password</label>
+            <input id="login-password" type="password" maxlength="32" placeholder="••••••••" required />
+            <label class="password-toggle" for="login-show-password"><input id="login-show-password" type="checkbox" /> Show password</label>
+          </div>
+          <button type="submit">Log in</button>
+        </form>
+
+        <form id="register-form" class="auth-form">
+          <label>
+            Username
+            <input id="register-username" type="text" maxlength="24" placeholder="alex" required />
+          </label>
+          <div class="password-field">
+            <label for="register-password">Password</label>
+            <input id="register-password" type="password" maxlength="32" placeholder="••••••••" required />
+            <label class="password-toggle" for="register-show-password"><input id="register-show-password" type="checkbox" /> Show password</label>
+          </div>
+          <button type="submit">Create account</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="profile-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="profile-title">
+      <div class="profile-card">
+        <button id="close-profile" class="profile-close" type="button" aria-label="Close profile">&times;</button>
+        <div class="profile-avatar" id="profile-avatar">B</div>
+        <h2 id="profile-title">Profile</h2>
+        <p id="profile-status" class="profile-status"></p>
+        <div id="profile-upload-wrap" class="profile-upload-wrap" hidden>
+          <label class="profile-upload-label" for="profile-file-input">
+            <input id="profile-file-input" type="file" accept="image/png,image/jpeg,image/jpg,image/webp" />
+            <span>Upload profile picture</span>
+          </label>
+        </div>
+        <button id="profile-dm" class="profile-dm-button" type="button">Message</button>
+      </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/app.js"></script>
+  </body>
+</html>
