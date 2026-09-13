@@ -3,6 +3,10 @@ https://automatic-garbanzo-q7jpqqjxxv56f665q-3000.app.github.dev
 
 BlueCord is a standalone real-time messaging website built with Node.js, Express, and Socket.IO.
 
+[Open BlueCord in GitHub Codespaces](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=SHAD0W3D-2%2FDiscord)
+
+The Codespaces link opens this repository in a browser-based development environment so GitHub users can run the project without installing Node.js locally.
+
 ## Run locally
 
 ```bash
